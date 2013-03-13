@@ -1,4 +1,4 @@
 Mississippi
-===========
+========
 
-Mississippi SGP Analyses
+SGP source code and documentation associated with Mississippi SGP analyses
