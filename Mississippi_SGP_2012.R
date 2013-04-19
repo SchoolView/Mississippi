@@ -51,6 +51,10 @@ MS.config <- list(
                     sgp.content.areas=c('MATHEMATICS', 'MATHEMATICS', 'MATHEMATICS', 'MATHEMATICS', 'ALGEBRA'),
                     sgp.panel.years=c("2007_2008", "2008_2009", "2009_2010", "2010_2011", "2011_2012"),
                     sgp.grade.sequences=list(5:9)),
+	ALGEBRA.2011_2012 = list(
+                    sgp.content.areas=c('MATHEMATICS', 'MATHEMATICS', 'MATHEMATICS', 'MATHEMATICS', 'ALGEBRA'),
+                    sgp.panel.years=c("2007_2008", "2008_2009", "2009_2010", "2010_2011", "2011_2012"),
+                    sgp.grade.sequences=list(5:9)),
 	BIOLOGY.2011_2012 = list(
                     sgp.content.areas=c('MATHEMATICS', 'MATHEMATICS', 'MATHEMATICS', 'SCIENCE', 'BIOLOGY'),
                     sgp.panel.years=c("2007_2008", "2008_2009", "2009_2010", "2010_2011", "2011_2012"),
