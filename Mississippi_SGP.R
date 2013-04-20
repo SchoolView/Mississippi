@@ -12,60 +12,67 @@ options(error=recover)
 
 ### Load data
 
-load("Data/Mississippi_Data_LONG.Rdata")
-##load("Data/Mississippi_SGP.Rdata")
+#load("Data/Mississippi_Data_LONG.Rdata")
+load("Data/Mississippi_SGP.Rdata")
 
 
-### Calculate SGPs for MCT first
+### prepareSGP
 
-Mississippi_SGP <- abcSGP(subset(Mississippi_Data_LONG, TEST_ADMINISTRATION=="MCT"),
-			state="MS",
-			steps=c("prepareSGP", "analyzeSGP"),
+Mississippi_SGP <- prepareSGP(Mississippi_SGP)
+
+
+### analyzeSGP for MATHEMATICS & READING_LANGUAGE_ARTS
+
+Mississippi_SGP <- analyzeSGP(Mississippi_SGP,
+			content_areas=c("MATHEMATICS", "READING_LANGUAGE_ARTS"),
 			sgp.percentiles=TRUE,
 			sgp.projections=TRUE,
 			sgp.projections.lagged=TRUE,
-			sgp.percentiles.baseline=FALSE,
-			sgp.projections.baseline=FALSE,
-			sgp.projections.lagged.baseline=FALSE,
-			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=30, BASELINE_PERCENTILES=30, PROJECTIONS=14, LAGGED_PROJECTIONS=14)))
+			sgp.percentiles.baseline=TRUE,
+			sgp.projections.baseline=TRUE,
+			sgp.projections.lagged.baseline=TRUE,
+			sgp.use.my.coefficient.matrices=TRUE,
+			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=20, BASELINE_PERCENTILES=20, PROJECTIONS=12, LAGGED_PROJECTIONS=12)))
 
 save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
 
 
-### Calculate SGPs for SATP (EOC exams)
+### analyzeSGP for SATP Exams (ALGEBRA, BIOLOGY, ENGLISH, HISTORY)
 
-Mississippi_SGP@Data <- as.data.table(Mississippi_Data_LONG)
-setkey(Mississippi_SGP@Data, VALID_CASE, CONTENT_AREA, YEAR, ID)
+source("SGP_CONFIG/EOCT/2009_2010/ALGEBRA.R")
+source("SGP_CONFIG/EOCT/2009_2010/BIOLOGY.R")
+source("SGP_CONFIG/EOCT/2009_2010/ENGLISH.R")
+source("SGP_CONFIG/EOCT/2009_2010/SCIENCE.R")
+source("SGP_CONFIG/EOCT/2010_2011/ALGEBRA.R")
+source("SGP_CONFIG/EOCT/2010_2011/BIOLOGY.R")
+source("SGP_CONFIG/EOCT/2010_2011/ENGLISH.R")
+source("SGP_CONFIG/EOCT/2010_2011/HISTORY.R") ### NOTE HISTORY goes back three years and is currently only available for 2010_2011 analyses
+source("SGP_CONFIG/EOCT/2010_2011/SCIENCE.R")
+source("SGP_CONFIG/EOCT/2011_2012/ALGEBRA.R")
+source("SGP_CONFIG/EOCT/2011_2012/BIOLOGY.R")
+source("SGP_CONFIG/EOCT/2011_2012/ENGLISH.R")
+source("SGP_CONFIG/EOCT/2011_2012/SCIENCE.R")
 
-MS.config <- list(
-	ALGEBRA.2010_2011 = list(
-                    sgp.content.areas=c('MATHEMATICS', 'MATHEMATICS', 'MATHEMATICS', 'ALGEBRA'),
-                    sgp.panel.years=c("2007_2008", "2008_2009", "2009_2010", "2010_2011"),
-                    sgp.grade.sequences=list(5:8, 6:9)),
-	ALGEBRA.2009_2010 = list(
-                    sgp.content.areas=c('MATHEMATICS', 'MATHEMATICS', 'ALGEBRA'),
-                    sgp.panel.years=c("2007_2008", "2008_2009", "2009_2010"),
-                    sgp.grade.sequences=list(6:8, 7:9)),
-	BIOLOGY.2010_2011 = list(
-                    sgp.content.areas=c('MATHEMATICS', 'MATHEMATICS', 'SCIENCE', 'BIOLOGY'),
-                    sgp.panel.years=c("2007_2008", "2008_2009", "2009_2010", "2010_2011"),
-                    sgp.grade.sequences=list(6:9)),
-	BIOLOGY.2009_2010 = list(
-                    sgp.content.areas=c('MATHEMATICS', 'SCIENCE', 'BIOLOGY'),
-                    sgp.panel.years=c("2007_2008", "2008_2009", "2009_2010"),
-                    sgp.grade.sequences=list(7:9)),
-	ENGLISH.2010_2011 = list(
-                    sgp.content.areas=c('READING_LANGUAGE_ARTS', 'READING_LANGUAGE_ARTS', 'ENGLISH'),
-                    sgp.panel.years=c("2007_2008", "2008_2009", "2010_2011"),
-                    sgp.grade.sequences=list(c(7,8,10))),
-	ENGLISH.2009_2010 = list(
-                    sgp.content.areas=c('READING_LANGUAGE_ARTS', 'ENGLISH'),
-                    sgp.panel.years=c("2007_2008", "2009_2010"),
-                    sgp.grade.sequences=list(c(8,10))),
-	HISTORY.2010_2011 = list(
-                    sgp.content.areas=c('READING_LANGUAGE_ARTS', 'HISTORY'),
-                    sgp.panel.years=c("2007_2008", "2010_2011"),
-                    sgp.grade.sequences=list(c(8,11))))
+MS_EOCT_2009_2010.config <- c(
+		ALGEBRA.2009_2010.config,
+		BIOLOGY.2009_2010.config,
+		ENGLISH.2009_2010.config,
+		SCIENCE.2009_2010.config)
+
+MS_EOCT_2010_2011.config <- c(
+		ALGEBRA.2010_2011.config,
+		BIOLOGY.2010_2011.config,
+		ENGLISH.2010_2011.config,
+		HISTORY.2010_2011.config,
+		SCIENCE.2010_2011.config)
+
+MS_EOCT_2011_2012.config <- c(
+		ALGEBRA.2011_2012.config,
+		BIOLOGY.2011_2012.config,
+		ENGLISH.2011_2012.config,
+		SCIENCE.2011_2012.config)
+
+MS_EOCT.config <- c(MS_EOCT_2009_2010.config, MS_EOCT_2010_2011.config, MS_EOCT_2011_2012.config)
 
 Mississippi_SGP <- analyzeSGP(
 			Mississippi_SGP,
@@ -75,7 +82,7 @@ Mississippi_SGP <- analyzeSGP(
 			sgp.percentiles.baseline=FALSE,
 			sgp.projections.baseline=FALSE,
 			sgp.projections.lagged.baseline=FALSE,
-			sgp.config=MS.config,
+			sgp.config=MS_EOCT.config,
                         parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=30)))
 
 save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
@@ -86,6 +93,6 @@ save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
 Mississippi_SGP <- abcSGP(Mississippi_SGP,
 			steps=c("combineSGP", "summarizeSGP", "visualizeSGP", "outputSGP"),
 			sgPlot.demo.report=TRUE,
-                        parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=30, GA_PLOTS=20, SG_PLOTS=1)))
+			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=30, GA_PLOTS=20, SG_PLOTS=1)))
 
 save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
