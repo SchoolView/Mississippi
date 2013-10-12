@@ -12,10 +12,10 @@ require(SGP)
 ### Load base data file
 
 my.colClasses <- c(rep("factor", 5), "numeric", "character", rep("factor", 3), rep("integer", 2), rep("factor", 4), rep("numeric", 2), rep("factor", 12))
-Mississippi_Data_LONG_2011_2012 <- read.table("Data/Base_Files/SGP_Mississippi_2011-12.csv", sep="|", header=TRUE, quote="", comment.char="", colClasses=my.colClasses)
+Mississippi_Data_LONG_2011_2012 <- read.table("Data/Base_Files/SGP_Mississippi_2011_2012.csv", sep="|", header=TRUE, quote="", comment.char="", colClasses=my.colClasses)
 Pilot_School <- read.table("Data/Base_Files/PilotDistSch.csv", sep="|", header=TRUE, quote="")
 SIG_School <- read.table("Data/Base_Files/SIGDistSch.csv", sep="|", header=TRUE, quote="")
-Teacher_Data <- read.table("Data/Base_Files/Teacher_ID.csv", sep="|", header=TRUE, quote="")
+Teacher_Data <- read.table("Data/Base_Files/Teacher_ID_2011_2012.csv", sep="|", header=TRUE, quote="")
 
 # Create Pilot and SIG school lookup table
 
