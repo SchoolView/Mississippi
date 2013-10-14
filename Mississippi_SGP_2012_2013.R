@@ -12,18 +12,19 @@ options(error=recover)
 
 ### Load data
 
-#load("Data/Mississippi_Data_LONG.Rdata")
+load("Data/Mississippi_Data_LONG_2012_2013.Rdata")
 load("Data/Mississippi_SGP.Rdata")
 
 
-### prepareSGP
+### prepareSGP via updateSGP
 
-Mississippi_SGP <- prepareSGP(Mississippi_SGP)
+Mississippi_SGP <- updateSGP(Mississippi_SGP, Mississippi_Data_LONG_2012_2013, steps="prepareSGP")
 
 
 ### analyzeSGP for MATHEMATICS & READING_LANGUAGE_ARTS
 
 Mississippi_SGP <- analyzeSGP(Mississippi_SGP,
+			years="2012_2013",
 			content_areas=c("MATHEMATICS", "READING_LANGUAGE_ARTS"),
 			sgp.percentiles=TRUE,
 			sgp.projections=TRUE,
@@ -39,40 +40,18 @@ save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
 
 ### analyzeSGP for SATP Exams (ALGEBRA, BIOLOGY, ENGLISH, HISTORY)
 
-source("SGP_CONFIG/EOCT/2009_2010/ALGEBRA.R")
-source("SGP_CONFIG/EOCT/2009_2010/BIOLOGY.R")
-source("SGP_CONFIG/EOCT/2009_2010/ENGLISH.R")
-source("SGP_CONFIG/EOCT/2009_2010/SCIENCE.R")
-source("SGP_CONFIG/EOCT/2010_2011/ALGEBRA.R")
-source("SGP_CONFIG/EOCT/2010_2011/BIOLOGY.R")
-source("SGP_CONFIG/EOCT/2010_2011/ENGLISH.R")
-source("SGP_CONFIG/EOCT/2010_2011/HISTORY.R") ### NOTE HISTORY goes back three years and is currently only available for 2010_2011 analyses
-source("SGP_CONFIG/EOCT/2010_2011/SCIENCE.R")
-source("SGP_CONFIG/EOCT/2011_2012/ALGEBRA.R")
-source("SGP_CONFIG/EOCT/2011_2012/BIOLOGY.R")
-source("SGP_CONFIG/EOCT/2011_2012/ENGLISH.R")
-source("SGP_CONFIG/EOCT/2011_2012/SCIENCE.R")
+source("SGP_CONFIG/EOCT/2012_2013/ALGEBRA.R")
+source("SGP_CONFIG/EOCT/2012_2013/BIOLOGY.R")
+source("SGP_CONFIG/EOCT/2012_2013/ENGLISH.R")
+source("SGP_CONFIG/EOCT/2012_2013/SCIENCE.R")
 
-MS_EOCT_2009_2010.config <- c(
-		ALGEBRA.2009_2010.config,
-		BIOLOGY.2009_2010.config,
-		ENGLISH.2009_2010.config,
-		SCIENCE.2009_2010.config)
+MS_EOCT_2012_2013.config <- c(
+		ALGEBRA.2012_2013.config,
+		BIOLOGY.2012_2013.config,
+		ENGLISH.2012_2013.config,
+		SCIENCE.2012_2013.config)
 
-MS_EOCT_2010_2011.config <- c(
-		ALGEBRA.2010_2011.config,
-		BIOLOGY.2010_2011.config,
-		ENGLISH.2010_2011.config,
-		HISTORY.2010_2011.config,
-		SCIENCE.2010_2011.config)
-
-MS_EOCT_2011_2012.config <- c(
-		ALGEBRA.2011_2012.config,
-		BIOLOGY.2011_2012.config,
-		ENGLISH.2011_2012.config,
-		SCIENCE.2011_2012.config)
-
-MS_EOCT.config <- c(MS_EOCT_2009_2010.config, MS_EOCT_2010_2011.config, MS_EOCT_2011_2012.config)
+MS_EOCT.config <- MS_EOCT_2012_2013.config
 
 Mississippi_SGP <- analyzeSGP(
 			Mississippi_SGP,
@@ -91,6 +70,7 @@ save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
 ### combineSGP, summarizeSGP, visualizeSGP, outputSGP
 
 Mississippi_SGP <- abcSGP(Mississippi_SGP,
+			years="2012_2013",
 			steps=c("combineSGP", "summarizeSGP", "visualizeSGP", "outputSGP"),
 			sgPlot.demo.report=TRUE,
 			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=30, GA_PLOTS=20, SG_PLOTS=1)))
