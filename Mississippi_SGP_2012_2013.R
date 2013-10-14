@@ -14,11 +14,13 @@ options(error=recover)
 
 load("Data/Mississippi_Data_LONG_2012_2013.Rdata")
 load("Data/Mississippi_SGP.Rdata")
+load("Data/Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013.Rdata")
 
 
 ### prepareSGP via updateSGP
 
 Mississippi_SGP <- updateSGP(Mississippi_SGP, Mississippi_Data_LONG_2012_2013, steps="prepareSGP")
+Mississippi_SGP@Data_Supplementary <- data.table(rbind.fill(Mississippi_SGP@Data_Supplementary$INSTRUCTOR_NUMBER, Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013), key=c("ID", "CONTENT_AREA", "YEAR"))
 
 
 ### analyzeSGP for MATHEMATICS & READING_LANGUAGE_ARTS
@@ -32,7 +34,6 @@ Mississippi_SGP <- analyzeSGP(Mississippi_SGP,
 			sgp.percentiles.baseline=TRUE,
 			sgp.projections.baseline=TRUE,
 			sgp.projections.lagged.baseline=TRUE,
-			sgp.use.my.coefficient.matrices=TRUE,
 			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=20, BASELINE_PERCENTILES=20, PROJECTIONS=12, LAGGED_PROJECTIONS=12)))
 
 save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
