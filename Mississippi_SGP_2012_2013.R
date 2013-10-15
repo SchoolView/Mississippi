@@ -20,7 +20,7 @@ load("Data/Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013.Rdata")
 ### prepareSGP via updateSGP
 
 Mississippi_SGP <- updateSGP(Mississippi_SGP, Mississippi_Data_LONG_2012_2013, steps="prepareSGP")
-Mississippi_SGP@Data_Supplementary <- data.table(rbind.fill(Mississippi_SGP@Data_Supplementary$INSTRUCTOR_NUMBER, Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013), key=c("ID", "CONTENT_AREA", "YEAR"))
+Mississippi_SGP@Data_Supplementary$INSTRUCTOR_NUMBER <- data.table(rbind.fill(Mississippi_SGP@Data_Supplementary$INSTRUCTOR_NUMBER, Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013), key=c("ID", "CONTENT_AREA", "YEAR"))
 
 
 ### analyzeSGP for MATHEMATICS & READING_LANGUAGE_ARTS
@@ -63,17 +63,33 @@ Mississippi_SGP <- analyzeSGP(
 			sgp.projections.baseline=FALSE,
 			sgp.projections.lagged.baseline=FALSE,
 			sgp.config=MS_EOCT.config,
-                        parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=30)))
+                        parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=10)))
 
 save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
 
 
 ### combineSGP, summarizeSGP, visualizeSGP, outputSGP
 
-Mississippi_SGP <- abcSGP(Mississippi_SGP,
-			years="2012_2013",
-			steps=c("combineSGP", "summarizeSGP", "visualizeSGP", "outputSGP"),
+Mississippi_SGP <- combineSGP(Mississippi_SGP, years="2012_2013")
+
+
+### summarizeSGP
+
+Mississippi_SGP <- summarizeSGP(Mississippi_SGP, parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=30)))
+
+
+### visualizeSGP
+
+Mississippi_SGP <- visualizeSGP(Mississippi_SGP,
 			sgPlot.demo.report=TRUE,
-			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=30, GA_PLOTS=20, SG_PLOTS=1)))
+			gaPlot.content_areas=c("READING_LANGUAGE_ARTS", "MATHEMATICS"))
+
+
+### outputSGP
+
+outputSGP(Mississippi_SGP)
+
+
+### Save results
 
 save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
