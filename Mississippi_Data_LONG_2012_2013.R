@@ -27,8 +27,9 @@ strhead <- function(s,n) {
 my.colClasses <- c(rep("character", 30))
 Mississippi_Data_LONG_2012_2013 <- read.table("Data/Base_Files/SGP_Mississippi_2012_2013.csv", sep="|", header=TRUE, quote="", comment.char="", colClasses=my.colClasses)
 load("Data/Base_Files/Pilot_SIG_District_Schools.Rdata")
-Teacher_Data_2012_2013 <- data.table(read.table("Data/Base_Files/Teacher_ID_2012_2013.csv", sep="|", header=TRUE, quote="", comment.char="", colClasses=c("character", "factor", "factor")), 
-	key="INSTRUCTOR_NUMBER")
+Instructor_Number_by_Content_Area_by_ID_2012_2013 <- read.csv("Data/Base_Files/Teacher_Student_Content_Area_Lookup_2012_2013.csv", header=TRUE, colClasses=rep("character", 3))
+Teacher_Data_2012_2013 <- data.table(read.table("Data/Base_Files/Teacher_ID_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=c("character", "factor", "factor")), 
+	key="Instructor_Number")
 
 
 ### Tidy up data
@@ -71,6 +72,8 @@ Mississippi_Data_LONG_2012_2013$TEST_ADMINISTRATION <- as.factor(Mississippi_Dat
 
 Mississippi_Data_LONG_2012_2013$INSTRUCTOR_1_ENROLLMENT_STATUS <- NULL
 Mississippi_Data_LONG_2012_2013$INSTRUCTOR_2_ENROLLMENT_STATUS <- NULL
+Mississippi_Data_LONG_2012_2013$INSTRUCTOR_NUMBER_1 <- NULL
+Mississippi_Data_LONG_2012_2013$INSTRUCTOR_NUMBER_2 <- NULL
 Mississippi_Data_LONG_2012_2013$INSTRUCTOR_1_WEIGHT <- NULL
 Mississippi_Data_LONG_2012_2013$INSTRUCTOR_2_WEIGHT <- NULL
 Mississippi_Data_LONG_2012_2013$GIFTED_AND_TALENTED <- NULL
@@ -84,15 +87,14 @@ Mississippi_Data_LONG_2012_2013 <- merge(Mississippi_Data_LONG_2012_2013, Pilot_
 # Construct Teacher data
 
 INSTRUCTOR_NUMBER <- data.table(
-		ID=rep(Mississippi_Data_LONG_2012_2013$ID, 2),
-		CONTENT_AREA=rep(Mississippi_Data_LONG_2012_2013$CONTENT_AREA, 2),
-		YEAR=rep(Mississippi_Data_LONG_2012_2013$YEAR, 2),
-		INSTRUCTOR_NUMBER=c(Mississippi_Data_LONG_2012_2013$INSTRUCTOR_NUMBER_1, Mississippi_Data_LONG_2012_2013$INSTRUCTOR_NUMBER_2),
+		Instructor_Number_by_Content_Area_by_ID_2012_2013,
+		YEAR="2012_2013",
 		INSTRUCTOR_ENROLLMENT_STATUS=factor(1, levels=1:2, labels=c("Enrolled Instructor: Yes", "Enrolled Instructor: No")),
 		INSTRUCTOR_WEIGHT=1L, key="INSTRUCTOR_NUMBER")
 
+INSTRUCTOR_NUMBER[INSTRUCTOR_NUMBER$CONTENT_AREA=="READING LANGUAGE ARTS"] <- "READING_LANGUAGE_ARTS"
 INSTRUCTOR_NUMBER <- subset(INSTRUCTOR_NUMBER, INSTRUCTOR_NUMBER!="")
-setnames(Teacher_Data_2012_2013, c("First.Name", "Last.Name"), c("INSTRUCTOR_FIRST_NAME", "INSTRUCTOR_LAST_NAME")) 
+setnames(Teacher_Data_2012_2013, c("Instructor_Number", "First_Name", "Last_Name"), c("INSTRUCTOR_NUMBER", "INSTRUCTOR_FIRST_NAME", "INSTRUCTOR_LAST_NAME")) 
 INSTRUCTOR_NUMBER <- Teacher_Data_2012_2013[INSTRUCTOR_NUMBER]
 INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME[INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME==""] <- NA
 INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME[INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME==""] <- NA
@@ -107,9 +109,6 @@ setkey(INSTRUCTOR_NUMBER, ID, CONTENT_AREA, YEAR)
 Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013 <- INSTRUCTOR_NUMBER
 save(Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013, file="Data/Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013.Rdata")
 
-Mississippi_Data_LONG_2012_2013$INSTRUCTOR_NUMBER_1 <- NULL
-Mississippi_Data_LONG_2012_2013$INSTRUCTOR_NUMBER_2 <- NULL
-
 
 ###
 ### Invalidate cases
@@ -123,10 +122,6 @@ Mississippi_Data_LONG_2012_2013 <- as.data.frame(Mississippi_Data_LONG_2012_2013
 
 
 ### Tidy up order of variables
-
-Mississippi_Data_LONG_2012_2013$INSTRUCTOR_NUMBER_1 <- NULL
-Mississippi_Data_LONG_2012_2013$INSTRUCTOR_NUMBER_2 <- NULL
-
 
 preferred.variable.order <- c("ID", "CONTENT_AREA", "TEST_ADMINISTRATION", "YEAR", "GRADE", "SCALE_SCORE", "ACHIEVEMENT_LEVEL", "LAST_NAME", "FIRST_NAME", "GRADE_ENROLLED",
 				"SCHOOL_NUMBER", "SCHOOL_NAME", "DISTRICT_NUMBER", "DISTRICT_NAME", 
