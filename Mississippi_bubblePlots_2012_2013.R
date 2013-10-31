@@ -14,8 +14,8 @@ options(error=recover)
 ### Load data
 
 load("Data/Mississippi_SGP.Rdata")
-load("Data/Base_Files/Pilot_District_Schools")
-load("Data/Base_Files/SIG_District_Schools")
+load("Data/Base_Files/Pilot_District_Schools.Rdata")
+load("Data/Base_Files/SIG_District_Schools.Rdata")
 
 
 ### Define relevant quantities
