@@ -25,9 +25,9 @@ strhead <- function(s,n) {
 ### Load base data file
 
 my.colClasses <- c(rep("character", 30))
-Mississippi_Data_LONG_2012_2013 <- read.table("Data/Base_Files/SGP_Mississippi_2012_2013.csv", sep="|", header=TRUE, quote="", comment.char="", colClasses=my.colClasses)
+Mississippi_Data_LONG_2012_2013 <- read.table("Data/Base_Files/SGP_Mississippi_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=my.colClasses)
 load("Data/Base_Files/Pilot_SIG_District_Schools.Rdata")
-Instructor_Number_by_Content_Area_by_ID_2012_2013 <- read.csv("Data/Base_Files/Teacher_Student_Content_Area_Lookup_2012_2013.csv", header=TRUE, colClasses=rep("character", 3))
+Instructor_Number_by_Content_Area_by_ID_2012_2013 <- read.table("Data/Base_Files/Teacher_Student_Content_Area_Lookup_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=rep("character", 3))
 Teacher_Data_2012_2013 <- data.table(read.table("Data/Base_Files/Teacher_ID_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=c("character", "factor", "factor")), 
 	key="Instructor_Number")
 
@@ -35,6 +35,7 @@ Teacher_Data_2012_2013 <- data.table(read.table("Data/Base_Files/Teacher_ID_2012
 ### Tidy up data
 
 Mississippi_Data_LONG_2012_2013$CONTENT_AREA[Mississippi_Data_LONG_2012_2013$CONTENT_AREA=="READING LANGUAGE ARTS"] <- "READING_LANGUAGE_ARTS"
+Mississippi_Data_LONG_2012_2013$CONTENT_AREA[Mississippi_Data_LONG_2012_2013$CONTENT_AREA=="US HISTORY"] <- "HISTORY"
 Mississippi_Data_LONG_2012_2013$YEAR <- "2012_2013"
 Mississippi_Data_LONG_2012_2013$GRADE <- as.character(as.integer(Mississippi_Data_LONG_2012_2013$GRADE))
 Mississippi_Data_LONG_2012_2013$GRADE_ENROLLED <- Mississippi_Data_LONG_2012_2013$GRADE
@@ -92,7 +93,7 @@ INSTRUCTOR_NUMBER <- data.table(
 		INSTRUCTOR_ENROLLMENT_STATUS=factor(1, levels=1:2, labels=c("Enrolled Instructor: Yes", "Enrolled Instructor: No")),
 		INSTRUCTOR_WEIGHT=1L, key="INSTRUCTOR_NUMBER")
 
-INSTRUCTOR_NUMBER[INSTRUCTOR_NUMBER$CONTENT_AREA=="READING LANGUAGE ARTS"] <- "READING_LANGUAGE_ARTS"
+INSTRUCTOR_NUMBER[CONTENT_AREA=="READING LANGUAGE ARTS", CONTENT_AREA:="READING_LANGUAGE_ARTS"]
 INSTRUCTOR_NUMBER <- subset(INSTRUCTOR_NUMBER, INSTRUCTOR_NUMBER!="")
 setnames(Teacher_Data_2012_2013, c("Instructor_Number", "First_Name", "Last_Name"), c("INSTRUCTOR_NUMBER", "INSTRUCTOR_FIRST_NAME", "INSTRUCTOR_LAST_NAME")) 
 INSTRUCTOR_NUMBER <- Teacher_Data_2012_2013[INSTRUCTOR_NUMBER]
@@ -118,6 +119,7 @@ Mississippi_Data_LONG_2012_2013 <- as.data.table(Mississippi_Data_LONG_2012_2013
 setkeyv(Mississippi_Data_LONG_2012_2013, c("VALID_CASE", "YEAR", "CONTENT_AREA", "ID", "GRADE", "SCALE_SCORE"))
 setkeyv(Mississippi_Data_LONG_2012_2013, c("VALID_CASE", "YEAR", "CONTENT_AREA", "ID"))
 Mississippi_Data_LONG_2012_2013[which(duplicated(Mississippi_Data_LONG_2012_2013))-1, VALID_CASE := "INVALID_CASE"]
+Mississippi_Data_LONG_2012_2013[GRADE %in% c("2", "56", "58", "64", "78"), VALID_CASE := "INVALID_CASE"]
 Mississippi_Data_LONG_2012_2013 <- as.data.frame(Mississippi_Data_LONG_2012_2013)
 
 
