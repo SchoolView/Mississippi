@@ -35,6 +35,7 @@ Teacher_Data_2012_2013 <- data.table(read.table("Data/Base_Files/Teacher_ID_2012
 ### Tidy up data
 
 Mississippi_Data_LONG_2012_2013$CONTENT_AREA[Mississippi_Data_LONG_2012_2013$CONTENT_AREA=="READING LANGUAGE ARTS"] <- "READING_LANGUAGE_ARTS"
+Mississippi_Data_LONG_2012_2013$CONTENT_AREA[Mississippi_Data_LONG_2012_2013$CONTENT_AREA=="US HISTORY"] <- "HISTORY"
 Mississippi_Data_LONG_2012_2013$YEAR <- "2012_2013"
 Mississippi_Data_LONG_2012_2013$GRADE <- as.character(as.integer(Mississippi_Data_LONG_2012_2013$GRADE))
 Mississippi_Data_LONG_2012_2013$GRADE_ENROLLED <- Mississippi_Data_LONG_2012_2013$GRADE
@@ -118,6 +119,7 @@ Mississippi_Data_LONG_2012_2013 <- as.data.table(Mississippi_Data_LONG_2012_2013
 setkeyv(Mississippi_Data_LONG_2012_2013, c("VALID_CASE", "YEAR", "CONTENT_AREA", "ID", "GRADE", "SCALE_SCORE"))
 setkeyv(Mississippi_Data_LONG_2012_2013, c("VALID_CASE", "YEAR", "CONTENT_AREA", "ID"))
 Mississippi_Data_LONG_2012_2013[which(duplicated(Mississippi_Data_LONG_2012_2013))-1, VALID_CASE := "INVALID_CASE"]
+Mississippi_Data_LONG_2012_2013[GRADE %in% c("2", "56", "58", "64", "78"), VALID_CASE := "INVALID_CASE"]
 Mississippi_Data_LONG_2012_2013 <- as.data.frame(Mississippi_Data_LONG_2012_2013)
 
 

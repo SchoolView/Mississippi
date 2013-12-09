@@ -81,7 +81,9 @@ Mississippi_Data_LONG$VALID_CASE[Mississippi_Data_LONG$CONTENT_AREA=="BIOLOGY" &
 Mississippi_Data_LONG <- as.data.table(Mississippi_Data_LONG)
 setkeyv(Mississippi_Data_LONG, c("VALID_CASE", "YEAR", "CONTENT_AREA", "ID", "GRADE", "SCALE_SCORE"))
 setkeyv(Mississippi_Data_LONG, c("VALID_CASE", "YEAR", "CONTENT_AREA", "ID"))
-invisible(Mississippi_Data_LONG[which(duplicated(Mississippi_Data_LONG))-1, VALID_CASE := "INVALID_CASE"])
+Mississippi_Data_LONG[which(duplicated(Mississippi_Data_LONG))-1, VALID_CASE := "INVALID_CASE"]
+Mississippi_Data_LONG[CONTENT_AREA=="SCIENCE" & !GRADE %in% c(5,8), VALID_CASE := "INVALID_CASE"]
+
 Mississippi_Data_LONG <- as.data.frame(Mississippi_Data_LONG)
 
 
