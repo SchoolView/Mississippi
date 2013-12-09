@@ -7,6 +7,7 @@
 ### Load SGP package
 
 require(SGP)
+require(data.table)
 options(error=recover)
 
 
