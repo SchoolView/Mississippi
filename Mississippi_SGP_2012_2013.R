@@ -8,6 +8,7 @@
 
 require(SGP)
 require(data.table)
+require(plyr)
 options(error=recover)
 
 
