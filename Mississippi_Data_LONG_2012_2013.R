@@ -29,7 +29,7 @@ Mississippi_Data_LONG_2012_2013 <- read.table("Data/Base_Files/SGP_Mississippi_2
 load("Data/Base_Files/Pilot_SIG_District_Schools.Rdata")
 Instructor_Number_by_Content_Area_by_ID_2012_2013 <- read.table("Data/Base_Files/Teacher_Student_Content_Area_Lookup_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=rep("character", 3))
 Teacher_Data_2012_2013 <- data.table(read.table("Data/Base_Files/Teacher_ID_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=c("character", "factor", "factor")), 
-	key="Instructor_Number")
+	key="INSTRUCTOR_NUMBER")
 
 
 ### Tidy up data
@@ -95,7 +95,7 @@ INSTRUCTOR_NUMBER <- data.table(
 
 INSTRUCTOR_NUMBER[CONTENT_AREA=="READING LANGUAGE ARTS", CONTENT_AREA:="READING_LANGUAGE_ARTS"]
 INSTRUCTOR_NUMBER <- subset(INSTRUCTOR_NUMBER, INSTRUCTOR_NUMBER!="")
-setnames(Teacher_Data_2012_2013, c("Instructor_Number", "First_Name", "Last_Name"), c("INSTRUCTOR_NUMBER", "INSTRUCTOR_FIRST_NAME", "INSTRUCTOR_LAST_NAME")) 
+setnames(Teacher_Data_2012_2013, c("INSTRUCTOR_NUMBER", "LAST_NAME", "FIRST_NAME"), c("INSTRUCTOR_NUMBER", "INSTRUCTOR_LAST_NAME", "INSTRUCTOR_FIRST_NAME")) 
 INSTRUCTOR_NUMBER <- Teacher_Data_2012_2013[INSTRUCTOR_NUMBER]
 INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME[INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME==""] <- NA
 INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME[INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME==""] <- NA
