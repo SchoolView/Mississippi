@@ -51,6 +51,7 @@ levels(Mississippi_Data_LONG_2012_2013$FIRST_NAME)[3] <- "Nicholas"
 Mississippi_Data_LONG_2012_2013$FIRST_NAME <- factor(as.character(Mississippi_Data_LONG_2012_2013$FIRST_NAME))
 Mississippi_Data_LONG_2012_2013$SCHOOL_NAME <- as.factor(Mississippi_Data_LONG_2012_2013$SCHOOL_NAME)
 levels(Mississippi_Data_LONG_2012_2013$SCHOOL_NAME) <- sapply(levels(Mississippi_Data_LONG_2012_2013$SCHOOL_NAME), capwords)
+Mississippi_Data_LONG_2012_2013$SCHOOL_NUMBER <- paste(Mississippi_Data_LONG_2012_2013$SCHOOL_NUMBER, "0", sep="")
 Mississippi_Data_LONG_2012_2013$DISTRICT_NAME <- as.factor(Mississippi_Data_LONG_2012_2013$DISTRICT_NAME)
 levels(Mississippi_Data_LONG_2012_2013$DISTRICT_NAME) <- sapply(levels(Mississippi_Data_LONG_2012_2013$DISTRICT_NAME), capwords)
 Mississippi_Data_LONG_2012_2013$STATE_ENROLLMENT_STATUS <- factor(1, levels=1:2, labels=c("Enrolled State: Yes", "Enrolled State: No"))
