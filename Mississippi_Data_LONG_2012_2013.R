@@ -24,12 +24,16 @@ strhead <- function(s,n) {
 
 ### Load base data file
 
-my.colClasses <- c(rep("character", 30))
+my.colClasses <- c(rep("character", 33))
 Mississippi_Data_LONG_2012_2013 <- read.table("Data/Base_Files/SGP_Mississippi_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=my.colClasses)
 load("Data/Base_Files/Pilot_SIG_District_Schools.Rdata")
 Instructor_Number_by_Content_Area_by_ID_2012_2013 <- read.table("Data/Base_Files/Teacher_Student_Content_Area_Lookup_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=rep("character", 3))
 Teacher_Data_2012_2013 <- data.table(read.table("Data/Base_Files/Teacher_ID_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=c("character", "factor", "factor")), 
 	key="INSTRUCTOR_NUMBER")
+
+### Remove Alternate assessment data
+
+Mississippi_Data_LONG_2012_2013 <- subset(Mississippi_Data_LONG_2012_2013, MAAECF_MTH=="" & MAAECF_RLA=="" & MAAECF_SCI=="" & SCALE_SCORE!=0)
 
 
 ### Tidy up data
