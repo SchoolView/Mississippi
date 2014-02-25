@@ -27,9 +27,7 @@ strhead <- function(s,n) {
 my.colClasses <- c(rep("character", 33))
 Mississippi_Data_LONG_2012_2013 <- read.table("Data/Base_Files/SGP_Mississippi_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=my.colClasses)
 load("Data/Base_Files/Pilot_SIG_District_Schools.Rdata")
-Instructor_Number_by_Content_Area_by_ID_2012_2013 <- read.table("Data/Base_Files/Teacher_Student_Content_Area_Lookup_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=rep("character", 3))
-Teacher_Data_2012_2013 <- data.table(read.table("Data/Base_Files/Teacher_ID_2012_2013.txt", sep="|", header=TRUE, quote="", comment.char="", colClasses=c("character", "factor", "factor")), 
-	key="INSTRUCTOR_NUMBER")
+
 
 ### Remove Alternate assessment data
 
@@ -89,32 +87,6 @@ Mississippi_Data_LONG_2012_2013$ETHNICITY <- NULL
 # Merge in Pilot_SIG School identifier
 
 Mississippi_Data_LONG_2012_2013 <- merge(Mississippi_Data_LONG_2012_2013, Pilot_SIG_District_Schools, all.x=TRUE)
-
-# Construct Teacher data
-
-INSTRUCTOR_NUMBER <- data.table(
-		Instructor_Number_by_Content_Area_by_ID_2012_2013,
-		YEAR="2012_2013",
-		INSTRUCTOR_ENROLLMENT_STATUS=factor(1, levels=1:2, labels=c("Enrolled Instructor: Yes", "Enrolled Instructor: No")),
-		INSTRUCTOR_WEIGHT=1L, key="INSTRUCTOR_NUMBER")
-
-INSTRUCTOR_NUMBER[CONTENT_AREA=="READING LANGUAGE ARTS", CONTENT_AREA:="READING_LANGUAGE_ARTS"]
-INSTRUCTOR_NUMBER <- subset(INSTRUCTOR_NUMBER, INSTRUCTOR_NUMBER!="")
-setnames(Teacher_Data_2012_2013, c("INSTRUCTOR_NUMBER", "LAST_NAME", "FIRST_NAME"), c("INSTRUCTOR_NUMBER", "INSTRUCTOR_LAST_NAME", "INSTRUCTOR_FIRST_NAME")) 
-INSTRUCTOR_NUMBER <- Teacher_Data_2012_2013[INSTRUCTOR_NUMBER]
-INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME[INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME==""] <- NA
-INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME[INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME==""] <- NA
-INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME <- factor(INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME)
-INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME <- factor(INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME)
-INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME <- as.factor(INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME)
-levels(INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME) <- sapply(levels(INSTRUCTOR_NUMBER$INSTRUCTOR_LAST_NAME), capwords)
-INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME <- as.factor(INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME)
-levels(INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME) <- sapply(levels(INSTRUCTOR_NUMBER$INSTRUCTOR_FIRST_NAME), capwords)
-setkey(INSTRUCTOR_NUMBER, ID, CONTENT_AREA, YEAR)
-INSTRUCTOR_NUMBER <- subset(INSTRUCTOR_NUMBER, ID %in% Mississippi_Data_LONG_2012_2013$ID)
-
-Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013 <- INSTRUCTOR_NUMBER
-save(Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013, file="Data/Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2012_2013.Rdata")
 
 
 ###
