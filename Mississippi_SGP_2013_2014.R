@@ -1,0 +1,97 @@
+####################################################################
+###
+### SGP analysis of Mississippi Data
+###
+####################################################################
+
+### Load SGP package
+
+require(SGP)
+require(data.table)
+require(plyr)
+options(error=recover)
+
+
+### Load data
+
+load("Data/Mississippi_Data_LONG_2013_2014.Rdata")
+load("Data/Mississippi_SGP.Rdata")
+#load("Data/Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2013_2014.Rdata")
+
+
+### prepareSGP via updateSGP
+
+Mississippi_SGP <- updateSGP(Mississippi_SGP, Mississippi_Data_LONG_2013_2014, steps="prepareSGP")
+#Mississippi_SGP@Data_Supplementary$INSTRUCTOR_NUMBER <- data.table(rbind.fill(Mississippi_SGP@Data_Supplementary$INSTRUCTOR_NUMBER, Mississippi_Data_LONG_INSTRUCTOR_NUMBER_2013_2014), key=c("ID", "CONTENT_AREA", "YEAR"))
+
+
+### analyzeSGP for MATHEMATICS & READING_LANGUAGE_ARTS
+
+Mississippi_SGP <- analyzeSGP(Mississippi_SGP,
+			years="2013_2014",
+			content_areas=c("MATHEMATICS", "READING_LANGUAGE_ARTS"),
+			sgp.percentiles=TRUE,
+			sgp.projections=TRUE,
+			sgp.projections.lagged=TRUE,
+			sgp.percentiles.baseline=TRUE,
+			sgp.projections.baseline=TRUE,
+			sgp.projections.lagged.baseline=TRUE,
+			parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=20, BASELINE_PERCENTILES=20, PROJECTIONS=12, LAGGED_PROJECTIONS=12)))
+
+save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
+
+
+### analyzeSGP for SATP Exams (ALGEBRA, BIOLOGY, ENGLISH, HISTORY)
+
+source("SGP_CONFIG/EOCT/2013_2014/ALGEBRA.R")
+source("SGP_CONFIG/EOCT/2013_2014/BIOLOGY.R")
+source("SGP_CONFIG/EOCT/2013_2014/ENGLISH.R")
+source("SGP_CONFIG/EOCT/2013_2014/SCIENCE.R")
+
+MS_EOCT_2013_2014.config <- c(
+		ALGEBRA.2013_2014.config,
+		BIOLOGY.2013_2014.config,
+		ENGLISH.2013_2014.config,
+		SCIENCE.2013_2014.config)
+
+MS_EOCT.config <- MS_EOCT_2013_2014.config
+
+Mississippi_SGP <- analyzeSGP(
+			Mississippi_SGP,
+			sgp.percentiles=TRUE,
+			sgp.projections=FALSE,
+			sgp.projections.lagged=FALSE,
+			sgp.percentiles.baseline=FALSE,
+			sgp.projections.baseline=FALSE,
+			sgp.projections.lagged.baseline=FALSE,
+			sgp.config=MS_EOCT.config,
+                        parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=10)))
+
+save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
+
+
+### combineSGP, summarizeSGP, visualizeSGP, outputSGP
+
+Mississippi_SGP <- combineSGP(Mississippi_SGP, years="2013_2014")
+
+
+### summarizeSGP
+
+Mississippi_SGP <- summarizeSGP(Mississippi_SGP, parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=30)))
+
+
+### visualizeSGP
+
+Mississippi_SGP <- visualizeSGP(Mississippi_SGP,
+			sgPlot.demo.report=TRUE,
+			gaPlot.content_areas=c("READING_LANGUAGE_ARTS", "MATHEMATICS"))
+
+
+### outputSGP
+
+outputSGP(Mississippi_SGP)
+
+
+### Save results
+
+save(Mississippi_SGP, file="Data/Mississippi_SGP.Rdata")
