@@ -46,6 +46,10 @@ source("EOCT/2012_2013/ALGEBRA.R")
 source("EOCT/2012_2013/BIOLOGY.R")
 source("EOCT/2012_2013/ENGLISH.R")
 source("EOCT/2012_2013/SCIENCE.R")
+source("EOCT/2013_2014/ALGEBRA.R")
+source("EOCT/2013_2014/BIOLOGY.R")
+source("EOCT/2013_2014/ENGLISH.R")
+source("EOCT/2013_2014/SCIENCE.R")
 
 MS_EOCT_2009_2010.config <- c(
                 ALGEBRA.2009_2010.config,
@@ -71,6 +75,12 @@ MS_EOCT_2012_2013.config <- c(
                 BIOLOGY.2012_2013.config,
                 ENGLISH.2012_2013.config,
 		SCIENCE.2012_2013.config)
+
+MS_EOCT_2013_2014.config <- c(
+		ALGEBRA.2013_2014.config,
+                BIOLOGY.2013_2014.config,
+                ENGLISH.2013_2014.config,
+		SCIENCE.2013_2014.config)
 
 
 ### Create configToNormGroup data.frame
@@ -101,11 +111,18 @@ MS_SGP_Norm_Group_Preference_2012_2013 <- data.table(
 					YEAR="2012_2013",
 					rbindlist(tmp.configToNormGroup))
 
+tmp.configToNormGroup <- lapply(MS_EOCT_2013_2014.config, configToSGPNormGroup)
+
+MS_SGP_Norm_Group_Preference_2013_2014 <- data.table(
+					YEAR="2013_2014",
+					rbindlist(tmp.configToNormGroup))
+
 MS_SGP_Norm_Group_Preference <- rbind(
 			MS_SGP_Norm_Group_Preference_2009_2010,
 			MS_SGP_Norm_Group_Preference_2010_2011,
 			MS_SGP_Norm_Group_Preference_2011_2012,
-			MS_SGP_Norm_Group_Preference_2012_2013
+			MS_SGP_Norm_Group_Preference_2012_2013,
+			MS_SGP_Norm_Group_Preference_2013_2014
 			)
 
 MS_SGP_Norm_Group_Preference$SGP_NORM_GROUP <- as.factor(MS_SGP_Norm_Group_Preference$SGP_NORM_GROUP)
