@@ -82,9 +82,9 @@ Mississippi_SGP <- summarizeSGP(Mississippi_SGP, parallel.config=list(BACKEND="P
 
 ### visualizeSGP
 
-Mississippi_SGP <- visualizeSGP(Mississippi_SGP,
-			sgPlot.demo.report=TRUE,
-			gaPlot.content_areas=c("READING_LANGUAGE_ARTS", "MATHEMATICS"))
+visualizeSGP(Mississippi_SGP,
+		sgPlot.demo.report=TRUE,
+		gaPlot.content_areas=c("READING_LANGUAGE_ARTS", "MATHEMATICS"))
 
 
 ### outputSGP
