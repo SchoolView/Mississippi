@@ -41,7 +41,7 @@ TMP_CGE_Data$CGESCIGRADE[TMP_CGE_Data$CGESCIGRADE==" " & TMP_CGE_Data$GRADE %in%
 
 attach(TMP_CGE_Data)
 TMP_CGE_Data_LONG <- data.table(
-			ID=strtail(paste("0000", rep(MSIS, 3), sep=""), 9),
+			ID=strtail(paste("00000", rep(MSIS, 3), sep=""), 9),
 			YEAR="2013_2014",
 			TEST_ADMINISTRATION="MCT",
 			CONTENT_AREA=rep(c("MATHEMATICS", "READING_LANGUAGE_ARTS", "SCIENCE"), each=dim(TMP_CGE_Data)[1]),
@@ -87,7 +87,7 @@ TMP_CHS_Data <- Mississippi_Data_WIDE_2013_2014[,c(tmp.variables.for.all, "CHSHI
 
 attach(TMP_CHS_Data)
 TMP_CHS_Data_LONG <- data.table(
-			ID=strtail(paste("0000", rep(MSIS, 4), sep=""), 9),
+			ID=strtail(paste("00000", rep(MSIS, 4), sep=""), 9),
 			YEAR="2013_2014",
 			TEST_ADMINISTRATION="SATP",
 			CONTENT_AREA=rep(c("ALGEBRA", "ENGLISH", "BIOLOGY", "HISTORY"), each=dim(TMP_CHS_Data)[1]),
@@ -95,7 +95,7 @@ TMP_CHS_Data_LONG <- data.table(
 			GRADE_ENROLLED=rep(GRADE, 4),
 			LAST_NAME=as.factor(rep(LAST, 4)),
 			FIRST_NAME=as.factor(rep(FIRST, 4)),
-			SCHOOL_NUMBER=strtail(paste("00", paste(rep(SCHOOL_NUMBER, 4), "0", sep=""), sep=""), 4),
+			SCHOOL_NUMBER=strtail(paste("000", paste(rep(SCHOOL_NUMBER, 4), "0", sep=""), sep=""), 4),
 			SCHOOL_NAME=as.factor(rep(NAME, 4)),
 			DISTRICT_NUMBER=strtail(paste("000", rep(DISTRICT_NUMBER, 4), sep=""), 4),
 			DISTRICT_NAME=as.factor(rep(NAME_1, 4)),
