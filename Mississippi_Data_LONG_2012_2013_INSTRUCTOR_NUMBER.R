@@ -10,6 +10,16 @@ require(SGP)
 require(data.table)
 
 
+### Utility function
+
+strtail <- function (s, n = 1) {
+    if (n < 0)
+        substring(s, 1 - n)
+    else substring(s, nchar(s) - n + 1)
+}
+
+
+
 ### Load Data
 
 load("Data/Mississippi_Data_LONG_2012_2013.Rdata")
@@ -28,6 +38,7 @@ INSTRUCTOR_NUMBER <- data.table(
 		YEAR="2012_2013",
 		INSTRUCTOR_WEIGHT=1L, key="INSTRUCTOR_NUMBER")
 
+INSTRUCTOR_NUMBER[,INSTRUCTOR_NUMBER:=strtail(paste("000000", INSTRUCTOR_NUMBER, sep=""), 9)]
 INSTRUCTOR_NUMBER[CONTENT_AREA=="READING LANGUAGE ARTS", CONTENT_AREA:="READING_LANGUAGE_ARTS"]
 INSTRUCTOR_NUMBER <- subset(INSTRUCTOR_NUMBER, INSTRUCTOR_NUMBER!="" & INSTRUCTOR_NUMBER!="0")
 setnames(Teacher_Data_2012_2013, c("INSTRUCTOR_NUMBER", "LAST_NAME", "FIRST_NAME"), c("INSTRUCTOR_NUMBER", "INSTRUCTOR_LAST_NAME", "INSTRUCTOR_FIRST_NAME")) 
